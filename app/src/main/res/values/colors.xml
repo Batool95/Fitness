@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="actionbar_background">#FF8800</color>
+    <color name="actionbar_text">#FFFFFF</color>
+    <color name="activity_background">#ffb2b2b2</color>
+    <color name="text_grey_small">#ffb2b2b2</color>
+
+    <color name="white">#FFFFFF</color>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Fitness</string>
+    <string name="title_activity_home">Fitness</string>
+    <string name="action_settings">Settings</string>
+    <string name="steps">Steps</string>
+    <string name="calories">Calories</string>
+    <string name="distance">Distance</string>
+
+</resources>
