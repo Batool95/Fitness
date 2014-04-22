@@ -9,7 +9,7 @@ Code Checkout Instructions
 
 If you wish to contribute this project, you can use below git instructions to checkout source and commit the changes.
 
--> Clone the project: git clone https://github.com/venkataravuri/icatalog.git
+-> Clone the project: git clone https://github.com/venkataravuri/Fitness.git
 
 -> Add files: git add . -v
 
