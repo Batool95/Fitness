@@ -113,7 +113,7 @@ public class HomeActivity extends FragmentActivity implements
                 case 1:
                     return new StatsFragment();
                 case 2:
-                    return new StatsFragment();
+                    return new WalkFragment();
                 default:
                     return new StatsFragment();
             }
