@@ -15,11 +15,13 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,6 +29,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Date;
 
 /**
  * Created by bujji on 01-05-2014.
@@ -67,64 +71,88 @@ public class WalkFragment extends Fragment {
     private TextView tvSteps;
     private TextView tvAgeOfEvents;
 
+    private int state = 0;
+
+    private SupportMapFragment supportMapFragment = new SupportMapFragment() {
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            GoogleMap googleMap = supportMapFragment.getMap();
+            if (googleMap != null) {
+                googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(12.9667, 77.5667)));
+                googleMap.getUiSettings().setZoomGesturesEnabled(true);
+
+                // Enabling MyLocation Layer of Google Map
+                googleMap.setMyLocationEnabled(true);
+
+                // Getting LocationManager object from System Service LOCATION_SERVICE
+                LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+                // Creating a criteria object to retrieve provider
+                Criteria criteria = new Criteria();
+
+                // Getting the name of the best provider
+                String provider = locationManager.getBestProvider(criteria, true);
+
+                // Getting Current Location
+                Location location = locationManager.getLastKnownLocation(provider);
+
+                if(location!=null) {
+                    // Getting latitude of the current location
+                    double latitude = location.getLatitude();
+
+                    // Getting longitude of the current location
+                    double longitude = location.getLongitude();
+
+                    Log.i(TAG, "Last known location: Latitude:" + latitude + "; longitude:" + longitude);
+
+                    // Creating a LatLng object for the current location
+                    LatLng position = new LatLng(latitude, longitude);
+
+                    googleMap.addMarker(new MarkerOptions().position(position).title("Start"));
+
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(position));
+                }
+            }
+        }
+    };
+
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = layoutInflater.inflate(R.layout.fragment_walk, container, false);
+        FragmentManager fm =  getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.map, supportMapFragment);
+        ft.commit();
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        final SupportMapFragment supportMapFragment = (SupportMapFragment) fragmentManager
+                .findFragmentById(R.id.map);
+
+
+
         Log.i(TAG, "Setup button listeners");
 
-        Button buttonStart = (Button) rootView.findViewById(R.id.btnStart);
-        Button buttonStop = (Button) rootView.findViewById(R.id.btnStop);
-        buttonStart.setOnClickListener(new View.OnClickListener() {
+        final ImageButton btnStartStop = (ImageButton) rootView.findViewById(R.id.btnStartStop);
+        btnStartStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerEventListener();
-            }
-        });
-        buttonStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                unregisterEventListener();
+                if (state ==0) {
+                    Log.i(TAG, "Changing background to stop.");
+                    btnStartStop.setBackgroundResource(R.drawable.stop);
+                    registerEventListener();
+                    state = 1;
+                } else {
+                    Log.i(TAG, "Changing background to start.");
+                    btnStartStop.setBackgroundResource(R.drawable.start);
+                    unregisterEventListener();
+                    state = 0;
+                }
+
             }
         });
         tvSteps = (TextView) rootView.findViewById(R.id.tvSteps);
         tvAgeOfEvents = (TextView) rootView.findViewById(R.id.tvAgeOfEvents);
-
-        // Getting reference to the SupportMapFragment of activity_main.xml
-        SupportMapFragment fm = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
-
-        // Getting GoogleMap object from the fragment
-        GoogleMap googleMap = fm.getMap();
-
-        // Enabling MyLocation Layer of Google Map
-        googleMap.setMyLocationEnabled(true);
-
-        // Getting LocationManager object from System Service LOCATION_SERVICE
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        // Creating a criteria object to retrieve provider
-        Criteria criteria = new Criteria();
-
-        // Getting the name of the best provider
-        String provider = locationManager.getBestProvider(criteria, true);
-
-        // Getting Current Location
-        Location location = locationManager.getLastKnownLocation(provider);
-
-        if(location!=null) {
-            // Getting latitude of the current location
-            double latitude = location.getLatitude();
-
-            // Getting longitude of the current location
-            double longitude = location.getLongitude();
-
-            Log.i(TAG, "Last known location: Latitude:" + latitude + "; longitude:" + longitude);
-
-            // Creating a LatLng object for the current location
-            LatLng position = new LatLng(latitude, longitude);
-
-            googleMap.addMarker(new MarkerOptions().position(position).title("Start"));
-
-            googleMap.animateCamera(CameraUpdateFactory.newLatLng(position));
-        }
 
         return rootView;
     }
@@ -273,6 +301,9 @@ public class WalkFragment extends Fragment {
         SensorManager sensorManager = (SensorManager) getActivity().getSystemService(Activity.SENSOR_SERVICE);
         sensorManager.unregisterListener(sensorEventListener);
         Log.i(TAG, "Sensor listener unregistered.");
+        WorkoutDBAdapter workoutDBAdapter = new WorkoutDBAdapter(getActivity());
+        workoutDBAdapter.saveCurrentSessionSteps(new Date(), (int) steps, (float) (steps * 1.5) ,steps * 2);
+        Log.i(TAG, "Saved steps information to database.");
     }
 
     @Override
