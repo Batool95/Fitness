@@ -2,6 +2,7 @@ package com.nikhu.fitness.app;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -13,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 
 public class HomeActivity extends FragmentActivity implements
@@ -143,11 +146,48 @@ public class HomeActivity extends FragmentActivity implements
     }
 
     public static class StatsFragment extends Fragment {
+        private WorkoutDBAdapter workoutDBAdapter;
+        private SimpleCursorAdapter dataAdapter;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_stats_tab, container, false);
 
+            displayListView(rootView);
+
             return rootView;
+        }
+
+        private void displayListView(View rootView) {
+
+            workoutDBAdapter = new WorkoutDBAdapter(getActivity());
+
+            Cursor cursor = workoutDBAdapter.getStepsData();
+
+            // The desired columns to be bound
+            String[] columns = new String[]{
+                    WorkoutDBAdapter.WorkoutHelper.STEPS,
+                    WorkoutDBAdapter.WorkoutHelper.DISTANCE,
+                    WorkoutDBAdapter.WorkoutHelper.CALORIES
+            };
+
+            // the XML defined views which the data will be bound to
+            int[] to = new int[]{
+                    R.id.txtSteps,
+                    R.id.txtDistance,
+                    R.id.txtCalories
+            };
+
+            dataAdapter = new SimpleCursorAdapter(
+                    getActivity(), R.layout.steps_frame,
+                    cursor,
+                    columns,
+                    to,
+                    0);
+
+            ListView listView = (ListView) rootView.findViewById(R.id.listView);
+            // Assign adapter to ListView
+            listView.setAdapter(dataAdapter);
         }
     }
 }

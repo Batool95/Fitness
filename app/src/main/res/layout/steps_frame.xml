@@ -6,7 +6,6 @@
     android:paddingStart="8dp"
     android:weightSum="7">
 
-    <!-- Displays steps icon -->
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -26,7 +25,31 @@
         android:padding="4dp">
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/txtSteps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20,000"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtSteps"
+            android:text="Steps"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/text_grey_small" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:padding="4dp">
+
+        <TextView
+            android:id="@+id/txtDistance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2.5 km"
@@ -37,7 +60,7 @@
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textView9"
+            android:layout_below="@id/txtDistance"
             android:text="Distance"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/text_grey_small" />
@@ -50,33 +73,7 @@
         android:padding="4dp">
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="20,000"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textView2"
-            android:text="Steps"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/text_grey_small" />
-
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:padding="4dp">
-
-        <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/txtCalories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="175"
@@ -87,7 +84,7 @@
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textView7"
+            android:layout_below="@id/txtCalories"
             android:text="Calories"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/text_grey_small" />

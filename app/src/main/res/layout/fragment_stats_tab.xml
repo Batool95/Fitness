@@ -8,6 +8,9 @@
     android:paddingRight="4dp"
     android:paddingTop="4dp">
 
-    <include layout="@layout/steps_frame" />
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView" />
 
 </LinearLayout>
